@@ -1,0 +1,16 @@
+{
+  "name": "Walkie Talkie Live",
+  "short_name": "Radio",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#00e052",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3616/3616230.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
