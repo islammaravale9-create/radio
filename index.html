@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"/>
+<title>جهاز اللاسلكي الحي</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00e052">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+
+<style>
+/* تنسيق الواجهة */
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
+body{background:#111;display:flex;justify-content:center;padding:20px;min-height:100vh;}
+#wrap{width:100%;max-width:360px;}
+
+/* واجهة الدخول */
+#login{text-align:center;padding:2rem 0.5rem;}
+.badge{display:inline-block;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:6px;padding:5px 16px;font-size:10px;color:#2a9a2a;letter-spacing:3px;margin-bottom:1.2rem;}
+.lbox{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:14px;padding:1.5rem;max-width:270px;margin:0 auto;}
+.ltitle{color:#00e052;font-size:18px;font-weight:bold;margin-bottom:4px;}
+.lsub{color:#555;font-size:12px;margin-bottom:1rem;}
+.cdis{background:#050f05;border:1px solid #0a200a;border-radius:7px;padding:10px;text-align:center;font-size:28px;letter-spacing:8px;color:#00e052;font-family:monospace;min-height:52px;margin-bottom:1rem;}
+.npad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px;}
+.nb{background:#1c1c1c;border:1px solid #2a2a2a;border-radius:6px;color:#ccc;font-size:16px;padding:12px;cursor:pointer;transition:background 0.1s;}
+.nb:hover{background:#252525;}
+.nb.x{color:#ff3333;}
+.entb{width:100%;background:#0a2a0a;border:1px solid #1a5a1a;border-radius:6px;color:#00e052;font-size:13px;padding:10px;cursor:pointer;letter-spacing:1px;}
+
+/* واجهة الراديو */
+#radio{background:#1a1a1a;border:2px solid #2a2a2a;border-radius:16px;overflow:hidden;display:none;}
+.tbar{background:#0d0d0d;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2a2a2a;}
+.sid{color:#2a7a2a;font-size:10px;letter-spacing:2px;}
+.cbdg{font-size:9px;padding:3px 8px;border-radius:3px;letter-spacing:1px;font-weight:bold;}
+.cbdg.on{background:#0a2a0a;color:#00e052;border:1px solid #1a5a1a;}
+.cbdg.off{background:#1a0a0a;color:#8a3a3a;border:1px solid #3a1a1a;}
+
+.rjoin{padding:10px;border-bottom:1px solid #2a2a2a;}
+.rjlbl{color:#444;font-size:9px;letter-spacing:1px;margin-bottom:6px;}
+.rjrow{display:flex;gap:7px;}
+.rjrow input{flex:1;background:#111;border:1px solid #2a2a2a;border-radius:6px;color:#ccc;font-size:12px;padding:7px 9px;outline:none;}
+.rjbtn{background:#0a2a0a;border:1px solid #1a5a1a;border-radius:6px;color:#00e052;font-size:11px;padding:7px 12px;cursor:pointer;}
+
+.disp{background:#050f05;margin:8px;border-radius:8px;border:1px solid #0a200a;padding:10px 14px;}
+.fval{color:#00e052;font-size:22px;font-family:monospace;font-weight:bold;}
+.stxt{color:#ffaa00;font-size:11px;letter-spacing:1px;font-weight:bold;}
+.stxt.rx{color:#00e052;} .stxt.tx{color:#ff3333;}
+
+.pttzone{padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;background:#0d0d0d;border-top:1px solid #2a2a2a;}
+.pttbtn{
+  width:120px;height:120px;border-radius:50%;
+  background:#1a0000;border:3px solid #550000;
+  color:#cc3333;font-size:13px;font-weight:bold;
+  cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:all 0.08s;user-select:none;-webkit-user-select:none;touch-action:none;
+}
+.pttbtn.tx{background:#3a0000;border-color:#ff3333;color:#ff3333;transform:scale(1.05);}
+.pttbtn.disabled{opacity:0.2;cursor:not-allowed;}
+</style>
+</head>
+<body>
+<div id="wrap">
+
+<div id="login">
+  <div class="badge">&#9673; SECURE STATION</div>
+  <div class="lbox">
+    <div class="ltitle">دخول المحطة</div>
+    <div class="lsub">أدخل الرمز (11111)</div>
+    <div class="cdis" id="cdis">_ _ _ _ _</div>
+    <div class="npad">
+      <button class="nb" onclick="np('1')">1</button>
+      <button class="nb" onclick="np('2')">2</button>
+      <button class="nb" onclick="np('3')">3</button>
+      <button class="nb" onclick="np('4')">4</button>
+      <button class="nb" onclick="np('5')">5</button>
+      <button class="nb" onclick="np('6')">6</button>
+      <button class="nb" onclick="np('7')">7</button>
+      <button class="nb" onclick="np('8')">8</button>
+      <button class="nb" onclick="np('9')">9</button>
+      <button class="nb x" onclick="nd()">&#9003;</button>
+      <button class="nb" onclick="np('0')">0</button>
+      <button class="nb x" onclick="nc()">&#10005;</button>
+    </div>
+    <button class="entb" onclick="doLogin()">&#9654; دخول</button>
+    <div id="lerr" style="color:red; font-size:11px; margin-top:5px;"></div>
+  </div>
+</div>
+
+<div id="radio">
+  <div class="tbar">
+    <span class="sid" id="sid">STATION-????</span>
+    <span class="cbdg off" id="cbdg">OFFLINE</span>
+  </div>
+  <div class="rjoin">
+    <div class="rjlbl">ROOM CODE — كود الغرفة</div>
+    <div class="rjrow">
+      <input id="roomIn" placeholder="مثال: alpha7"/>
+      <button class="rjbtn" onclick="joinRoom()">انضمام</button>
+    </div>
+  </div>
+  <div class="disp">
+    <div class="fval" id="fval">462.562 MHz</div>
+    <div class="stxt" id="stxt">STANDBY</div>
+  </div>
+  <div class="pttzone">
+    <button class="pttbtn disabled" id="pttbtn">PTT</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SECRET = '11111';
+let code='', myId='', room='', localStream=null, ws=null, txing=false;
+
+function np(n){ if(code.length<5) code+=n; ucd(); }
+function nd(){ code=code.slice(0,-1); ucd(); }
+function nc(){ code=''; ucd(); }
+function ucd(){ document.getElementById('cdis').textContent = code.padEnd(5,'_').split('').join(' '); }
+
+function doLogin(){
+  if(code===SECRET){
+    document.getElementById('login').style.display='none';
+    document.getElementById('radio').style.display='block';
+    myId = 'U'+Math.floor(Math.random()*9000+1000);
+    document.getElementById('sid').textContent = 'STATION-'+myId;
+  } else {
+    document.getElementById('lerr').textContent = 'رمز خاطئ'; code=''; ucd();
+  }
+}
+
+async function joinRoom(){
+  room = document.getElementById('roomIn').value.trim();
+  if(!room) return;
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({audio:true});
+    localStream.getAudioTracks().forEach(t => t.enabled = false);
+    connectWS();
+  } catch(e) { alert("يجب السماح بالميكروفون!"); }
+}
+
+function connectWS(){
+  ws = new WebSocket('wss://free.blr2.piesocket.com/v3/wt-'+room+'?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9f72nB');
+  ws.onopen = () => {
+    document.getElementById('cbdg').textContent='ONLINE';
+    document.getElementById('cbdg').className='cbdg on';
+    document.getElementById('pttbtn').classList.remove('disabled');
+    setupPTT();
+  };
+}
+
+function setupPTT(){
+  const btn = document.getElementById('pttbtn');
+  const start = (e) => {
+    e.preventDefault(); if(txing) return; txing=true;
+    localStream.getAudioTracks().forEach(t => t.enabled = true);
+    btn.classList.add('tx'); document.getElementById('stxt').textContent='TX — يرسل';
+  };
+  const stop = () => {
+    if(!txing) return; txing=false;
+    localStream.getAudioTracks().forEach(t => t.enabled = false);
+    btn.classList.remove('tx'); document.getElementById('stxt').textContent='STANDBY';
+  };
+  btn.onmousedown = btn.ontouchstart = start;
+  window.onmouseup = window.ontouchend = stop;
+}
+</script>
+</body>
+      </html>
+      
